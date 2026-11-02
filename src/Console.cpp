@@ -1,4 +1,5 @@
 #include "Console.h"
+#include <algorithm>
 #include <cctype>
 #include <cstdlib>
 #include <iostream>
@@ -6,7 +7,9 @@
 
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #include <windows.h>
 #ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
 #define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
@@ -20,8 +23,8 @@ constexpr int WIDTH = 35;      // visible width of one rendered board
 const std::string GAP(6, ' ');
 
 std::string center(const std::string& text, int width) {
-    int left = (width - static_cast<int>(text.size())) / 2;
-    return std::string(left, ' ') + text + std::string(width - left - text.size(), ' ');
+    int space = std::max(0, width - static_cast<int>(text.size()));
+    return std::string(space / 2, ' ') + text + std::string(space - space / 2, ' ');
 }
 
 bool sunkAt(const Board& board, Coord c) {
